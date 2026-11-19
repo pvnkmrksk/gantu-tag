@@ -6,7 +6,7 @@
 <title>gantu-tag · open BLE tracking tags for insects</title>
 <meta name="description" content="Open, tiny Bluetooth LE tracking tags for insects that anyone can order from JLCPCB: Hagalu Gantu (solar) and Irulu Gantu (button cell), built on the InPlay IN100 for Apple Find My or Hubble.">
 <meta property="og:title" content="gantu-tag · open BLE tracking tags for insects">
-<meta property="og:description" content="Two open-hardware BLE tags, 0.12–0.21 g, ready to order assembled from JLCPCB: about €7 solar, €2.30 with a button cell.">
+<meta property="og:description" content="Two open-hardware BLE tags, about 0.25 g, ready to order assembled from JLCPCB: about €7 solar, €2.30 with a button cell.">
 <meta property="og:image" content="https://pvnkmrksk.github.io/gantu-tag/img/og.jpg">
 <meta property="og:url" content="https://pvnkmrksk.github.io/gantu-tag/">
 <meta name="twitter:card" content="summary_large_image">
@@ -82,7 +82,7 @@ footer{padding:36px 0 60px;border-top:1px solid var(--line);color:var(--muted);f
 <body>
 <nav><div class="wrap">
   <a class="brand" href="#top"><img src="img/gantu.svg" alt="">gantu-tag</a>
-  <div class="links"><a href="#tags">Tags</a><a href="#approach" class="opt">Approach</a><a href="#build" class="opt">Build</a><a href="#bom">BOM &amp; cost</a><a href="https://github.com/pvnkmrksk/gantu-tag">GitHub</a></div>
+  <div class="links"><a href="#tags">Tags</a><a href="#approach" class="opt">Approach</a><a href="#build" class="opt">Build</a><a href="#roadmap">Roadmap</a><a href="#bom">BOM &amp; cost</a><a href="https://github.com/pvnkmrksk/gantu-tag">GitHub</a></div>
 </div></nav>
 
 <header id="top"><div class="wrap">
@@ -94,7 +94,7 @@ footer{padding:36px 0 60px;border-top:1px solid var(--line);color:var(--muted);f
     <a class="btn primary" href="https://github.com/pvnkmrksk/gantu-tag">View on GitHub</a>
     <a class="btn" href="https://github.com/pvnkmrksk/gantu-tag/raw/main/order/insect_tag_v8.3_jlc_order.zip">Download the JLC order files</a>
   </div>
-  <p class="note"><b>Early pilots.</b> The first panels arrived assembled from JLCPCB on 19 November 2026; the same evening, a Hagalu S6 was reported through Apple Find My three times in 20 minutes (±76–102 m). Masses, lifetimes and costs are still design estimates.</p>
+  <p class="note"><b>Early pilots.</b> The first panels arrived assembled from JLCPCB on 19 November 2026; the same evening, a Hagalu S6 was reported through Apple Find My three times in 20 minutes (±76–102 m). It advertises steadily from about 1.9 klx and weighs 0.242 g with its wire antenna. Other masses, lifetimes and costs are still design estimates.</p>
 </div></header>
 
 <section id="tags"><div class="wrap">
@@ -110,7 +110,7 @@ footer{padding:36px 0 60px;border-top:1px solid var(--line);color:var(--muted);f
           <dt>Power</dt><dd>Six photodiodes charge a 100 µF capacitor</dd>
           <dt>Runs</dt><dd>In light only, in bursts as the capacitor fills</dd>
           <dt>Size</dt><dd>6.4 × 12.55 mm after cutting the tail</dd>
-          <dt>Mass</dt><dd>≈ 0.19–0.21 g (estimate, 0.6 mm board)</dd>
+          <dt>Mass</dt><dd><b>0.242 g measured</b> (S6 with wire antenna, no epoxy)</dd>
           <dt>Pilots</dt><dd>S6, S6L (supervised start) and N6 (none)</dd>
           <dt>Cost</dt><dd><b>≈ €7</b> per tag</dd>
         </dl>
@@ -125,7 +125,7 @@ footer{padding:36px 0 60px;border-top:1px solid var(--line);color:var(--muted);f
           <dt>Power</dt><dd>Silver-oxide cell: 337, 364 or 377</dd>
           <dt>Runs</dt><dd>Continuously; ≈ 57 days on a 337 at a 3 s interval</dd>
           <dt>Size</dt><dd>Ø 7.2 mm after cutting the tail</dd>
-          <dt>Mass</dt><dd>≈ 0.12 g without the cell, ≈ 0.25 g with a 337</dd>
+          <dt>Mass</dt><dd>≈ 0.12 g without the cell, ≈ 0.25 g with a 337 (estimate)</dd>
           <dt>Pilots</dt><dd>V1 (starts when the cell goes on), V2 (cut the tail to start)</dd>
           <dt>Cost</dt><dd><b>≈ €2.30</b> per tag, plus a button cell</dd>
         </dl>
@@ -138,6 +138,11 @@ footer{padding:36px 0 60px;border-top:1px solid var(--line);color:var(--muted);f
     <div class="panel"><img src="img/panel-top.jpg" alt="Render of the combined 0.6 mm panel" loading="lazy"><p class="small">The design render.</p></div>
   </div>
   <p class="small">94.9 × 71.1 mm, 2 layers, 0.6 mm FR-4. Each panel carries 10 Hagalu and 8 Irulu tags; the variant is printed on each tag's underside.</p>
+  <h3 class="t">First bench results</h3>
+  <div class="tags">
+    <div class="panel"><img src="img/bench-scale.jpg" alt="A Hagalu S6 with its wire antenna on a 1 mg scale, reading 0.242 g" loading="lazy"><p class="small">A Hagalu S6, tail cut, with its wire antenna and no epoxy: 0.242 g.</p></div>
+    <div class="panel"><img src="img/bench-findmy.jpg" alt="nRF Connect showing a Find My advert from the tag at -57 dBm, next to a phone reading 1704 lx" loading="lazy"><p class="small">Its Find My advert in nRF Connect, under 1.7 klx of desk light. It advertises steadily from about 1.9 klx.</p></div>
+  </div>
 </div></section>
 
 <section id="approach"><div class="wrap">
@@ -161,6 +166,17 @@ footer{padding:36px 0 60px;border-top:1px solid var(--line);color:var(--muted);f
     <div class="step"><h3>Program</h3><p>Four wires from a 3.3 V USB-serial adapter to the tail's 2.54 mm pads, and InPlay's NanoBeacon Config Tool. Test in RAM, then burn. See the <a href="https://github.com/pvnkmrksk/gantu-tag/blob/main/docs/programming.md">programming guide</a>.</p></div>
     <div class="step"><h3>Finish</h3><p>Break the tag out, solder a ~31 mm antenna wire, fit the cell on Irulu, cut the tail and coat in epoxy. Steps for <a href="https://github.com/pvnkmrksk/gantu-tag/blob/main/hagalu/README.md">Hagalu</a> and <a href="https://github.com/pvnkmrksk/gantu-tag/blob/main/irulu/README.md">Irulu</a>.</p></div>
   </div>
+</div></section>
+
+<section id="roadmap"><div class="wrap">
+  <h2>Roadmap</h2>
+  <p class="sub">Lighter first, then simpler, then cheaper: cost is already low, while mass decides which insects can carry a tag. The full plan is in <a href="https://github.com/pvnkmrksk/gantu-tag/blob/main/docs/roadmap.md">docs/roadmap.md</a>.</p>
+  <div class="steps nonum">
+    <div class="step"><h3>Now · bench</h3><p>Measure the v8.3 pilots: the mass split between board and parts, Irulu bring-up, the S6L and N6 start circuits, a smaller capacitor, range in the open, and Hubble.</p><p class="small" style="margin-top:8px">Hagalu 0.242 g measured · Irulu ≈ 0.25 g with a 337</p></div>
+    <div class="step"><h3>v9 · flex</h3><p>The same circuits on polyimide flex, with the antenna as a copper trace on a flex tail instead of a hand-soldered wire, thinner copper, and a 47 µF capacitor if it tests well.</p><p class="small" style="margin-top:8px">Hagalu ≈ 0.13–0.16 g · Irulu ≈ 0.19–0.20 g with a 337</p></div>
+    <div class="step"><h3>v10 · chip-scale</h3><p>The IN100 in its 1.1 × 2.0 mm WLCSP package and 0201 parts. Irulu shrinks to a board no bigger than its cell.</p><p class="small" style="margin-top:8px">Hagalu ≈ 0.05–0.07 g · Irulu ≈ 0.16–0.17 g with a 337</p></div>
+  </div>
+  <p class="small">On Irulu the 0.13 g cell is the floor: the 337 is the smallest common silver-oxide cell and already outlasts a typical 1–3 week deployment. Targets are estimates until each stage is built and weighed.</p>
 </div></section>
 
 <section id="bom"><div class="wrap">
