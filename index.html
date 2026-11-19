@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>gantu-tag · open BLE tracking tags for insects</title>
+<meta name="description" content="Open, tiny Bluetooth LE tracking tags for insects that anyone can order from JLCPCB: Hagalu Gantu (solar) and Irulu Gantu (button cell), built on the InPlay IN100 for Apple Find My or Hubble.">
+<meta property="og:title" content="gantu-tag · open BLE tracking tags for insects">
+<meta property="og:description" content="Two open-hardware BLE tags, 0.12–0.21 g, ready to order assembled from JLCPCB for about €7 each.">
+<meta property="og:image" content="https://pvnkmrksk.github.io/gantu-tag/img/og.jpg">
+<meta property="og:url" content="https://pvnkmrksk.github.io/gantu-tag/">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" type="image/svg+xml" href="img/gantu.svg">
+<link rel="icon" type="image/png" sizes="32x32" href="img/favicon-32.png">
+<link rel="apple-touch-icon" href="img/apple-touch-icon.png">
+<meta name="theme-color" content="#FBF5E9">
+<style>
+:root{--bg:#FBF5E9;--card:#fff;--ink:#22242b;--muted:#5d6070;--line:#e7dfcf;--ochre:#c98a12;--indigo:#2B357A;--code:#f3ecdd}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font:17px/1.6 system-ui,-apple-system,"Segoe UI",Roboto,"Noto Sans","Noto Sans Kannada",sans-serif;-webkit-font-smoothing:antialiased}
+a{color:var(--indigo)}
+.wrap{max-width:980px;margin:0 auto;padding:0 22px}
+nav{position:sticky;top:0;z-index:5;background:rgba(251,245,233,.92);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+nav .wrap{display:flex;align-items:center;gap:18px;height:56px}
+nav .brand{display:flex;align-items:center;gap:10px;font-weight:700;text-decoration:none;color:var(--ink)}
+nav .brand img{width:28px;height:28px}
+nav .links{margin-left:auto;display:flex;gap:16px;font-size:15px}
+nav .links a{text-decoration:none;color:var(--muted)}
+nav .links a:hover{color:var(--ink)}
+@media(max-width:640px){nav .links a.opt{display:none}}
+header{padding:64px 0 40px;text-align:center}
+header img.logo{width:132px;height:132px}
+h1{font-size:clamp(34px,6vw,52px);line-height:1.1;margin:18px 0 6px;letter-spacing:-.02em}
+h1 .kn{font-weight:500;color:var(--muted)}
+.say{color:var(--muted);font-size:15px;margin:0 0 18px}
+.lede{font-size:20px;max-width:640px;margin:0 auto 26px;color:#3a3d48}
+.btns{display:flex;flex-wrap:wrap;gap:10px;justify-content:center}
+.btn{display:inline-block;padding:10px 18px;border-radius:999px;text-decoration:none;font-weight:600;font-size:15px;border:1px solid var(--ink);color:var(--ink)}
+.btn.primary{background:var(--ink);color:#fff}
+.note{background:#fff4d6;border:1px solid #f0d58f;border-radius:12px;padding:12px 16px;font-size:15px;max-width:720px;margin:30px auto 0}
+section{padding:48px 0;border-top:1px solid var(--line)}
+h2{font-size:28px;margin:0 0 6px;letter-spacing:-.01em}
+.sub{color:var(--muted);margin:0 0 24px}
+.tags{display:grid;grid-template-columns:1fr 1fr;gap:22px}
+@media(max-width:760px){.tags{grid-template-columns:1fr}}
+.card{background:var(--card);border:1px solid var(--line);border-radius:18px;overflow:hidden}
+.card .pics{display:grid;grid-template-columns:1fr 1fr;background:#24262c}
+.card .pics img{width:100%;display:block;aspect-ratio:1;object-fit:cover}
+.card .body{padding:18px 20px 20px}
+.card h3{margin:0;font-size:22px}
+.card h3 small{font-weight:500;color:var(--muted);font-size:16px;margin-left:6px}
+.card .k{font-size:14px;color:var(--muted);margin:2px 0 12px}
+dl{display:grid;grid-template-columns:max-content 1fr;gap:6px 14px;margin:0;font-size:15px}
+dt{color:var(--muted)}dd{margin:0}
+.panel img{width:100%;border-radius:14px;display:block;border:1px solid var(--line)}
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;counter-reset:s}
+@media(max-width:760px){.steps{grid-template-columns:1fr}}
+.step{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px 20px}
+.step h3{margin:0 0 6px;font-size:18px}
+.step h3::before{counter-increment:s;content:counter(s);display:inline-grid;place-items:center;width:26px;height:26px;border-radius:50%;background:var(--ink);color:#fff;font-size:14px;margin-right:9px}
+.step p{margin:0;font-size:15px;color:#3a3d48}
+table{width:100%;border-collapse:collapse;font-size:14.5px;background:var(--card);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+th,td{text-align:left;padding:8px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+th{background:#f6efe0;font-weight:600}
+tr:last-child td{border-bottom:0}
+td.n,th.n{text-align:right;white-space:nowrap}
+code{background:var(--code);padding:1px 6px;border-radius:6px;font-size:.9em}
+.tw{overflow-x:auto;margin-bottom:22px}
+.bomgrid{display:grid;grid-template-columns:1fr;gap:6px}
+h3.t{font-size:19px;margin:22px 0 10px}
+.cost{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:20px}
+@media(max-width:760px){.cost{grid-template-columns:1fr}}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px 18px}
+.stat b{display:block;font-size:28px;letter-spacing:-.01em}
+.stat span{color:var(--muted);font-size:14px}
+.small{font-size:14px;color:var(--muted)}
+footer{padding:36px 0 60px;border-top:1px solid var(--line);color:var(--muted);font-size:14px}
+.name td:nth-child(2){font-size:18px}
+</style>
+</head>
+<body>
+<nav><div class="wrap">
+  <a class="brand" href="#top"><img src="img/gantu.svg" alt="">gantu-tag</a>
+  <div class="links"><a href="#tags">Tags</a><a href="#build" class="opt">Build</a><a href="#bom">BOM &amp; cost</a><a href="https://github.com/pvnkmrksk/gantu-tag">GitHub</a></div>
+</div></nav>
+
+<header id="top"><div class="wrap">
+  <img class="logo" src="img/gantu.svg" alt="gantu-tag logo: a trefoil knot">
+  <h1>gantu-tag <span class="kn">ಗಂಟು</span></h1>
+  <p class="say"><i>gun-two</i> · /ɡəɳʈu/ · a knot, in Kannada</p>
+  <p class="lede">Open, tiny Bluetooth LE tracking tags for insects that anyone can order assembled from JLCPCB for about €7 each, then finish by hand.</p>
+  <div class="btns">
+    <a class="btn primary" href="https://github.com/pvnkmrksk/gantu-tag">View on GitHub</a>
+    <a class="btn" href="https://github.com/pvnkmrksk/gantu-tag/raw/main/order/insect_tag_v8.3_jlc_order.zip">Download the JLC order files</a>
+  </div>
+  <p class="note"><b>Early pilots.</b> The first panels arrived assembled from JLCPCB on 19 November 2026; bench testing starts now. Masses, lifetimes and costs are design estimates until bring-up results are in.</p>
+</div></header>
+
+<section id="tags"><div class="wrap">
+  <h2>Two tags, one panel</h2>
+  <p class="sub">Both use the InPlay IN100 NanoBeacon, configured for Apple Find My (OpenHaystack static key) or Hubble when you burn its one-time-programmable memory. The hardware doesn't change between networks.</p>
+  <div class="tags">
+    <article class="card">
+      <div class="pics"><img src="img/hagalu-top.jpg" alt="Hagalu Gantu, top render" loading="lazy"><img src="img/hagalu-bottom.jpg" alt="Hagalu Gantu, bottom render" loading="lazy"></div>
+      <div class="body">
+        <h3>Hagalu Gantu <small>ಹಗಲು ಗಂಟು</small></h3>
+        <p class="k">Solar, battery-free</p>
+        <dl>
+          <dt>Power</dt><dd>Six photodiodes charge a 100 µF capacitor</dd>
+          <dt>Runs</dt><dd>In light only, in bursts as the capacitor fills</dd>
+          <dt>Size</dt><dd>6.4 × 12.55 mm after cutting the tail</dd>
+          <dt>Mass</dt><dd>≈ 0.19–0.21 g (estimate, 0.6 mm board)</dd>
+          <dt>Pilots</dt><dd>S6, S6L (supervised start) and N6 (none)</dd>
+        </dl>
+      </div>
+    </article>
+    <article class="card">
+      <div class="pics"><img src="img/irulu-top.jpg" alt="Irulu Gantu, top render" loading="lazy"><img src="img/irulu-bottom.jpg" alt="Irulu Gantu, bottom render" loading="lazy"></div>
+      <div class="body">
+        <h3>Irulu Gantu <small>ಇರುಳು ಗಂಟು</small></h3>
+        <p class="k">Button cell</p>
+        <dl>
+          <dt>Power</dt><dd>Silver-oxide cell: 337, 364 or 377</dd>
+          <dt>Runs</dt><dd>Continuously; ≈ 57 days on a 337 at a 3 s interval</dd>
+          <dt>Size</dt><dd>Ø 7.2 mm after cutting the tail</dd>
+          <dt>Mass</dt><dd>≈ 0.12 g without the cell, ≈ 0.25 g with a 337</dd>
+          <dt>Pilots</dt><dd>V1 (starts when the cell goes on), V2 (cut the tail to start)</dd>
+        </dl>
+      </div>
+    </article>
+  </div>
+  <h3 class="t">The JLC panel</h3>
+  <div class="tags">
+    <div class="panel"><img src="img/panel-photo.jpg" alt="An assembled panel as it arrived from JLCPCB" loading="lazy"><p class="small">As it arrived, 19 Nov 2026.</p></div>
+    <div class="panel"><img src="img/panel-top.jpg" alt="Render of the combined 0.6 mm panel" loading="lazy"><p class="small">The design render.</p></div>
+  </div>
+  <p class="small">94.9 × 71.1 mm, 2 layers, 0.6 mm FR-4. Each panel carries 10 Hagalu and 8 Irulu tags; the variant is printed on each tag's underside.</p>
+</div></section>
+
+<section id="build"><div class="wrap">
+  <h2>Build your own</h2>
+  <p class="sub">No firmware to write and no soldering of fine-pitch parts: JLCPCB places everything.</p>
+  <div class="steps">
+    <div class="step"><h3>Order</h3><p>Upload the <a href="https://github.com/pvnkmrksk/gantu-tag/tree/main/order">order files</a> to JLCPCB: 0.6 mm, Panel by Customer, Standard PCBA, 2 assembled panels. Check the placement preview against the list in the order notes.</p></div>
+    <div class="step"><h3>Program</h3><p>Four wires from a 3.3 V USB-serial adapter to the tail's 2.54 mm pads, and InPlay's NanoBeacon Config Tool. Test in RAM, then burn. See the <a href="https://github.com/pvnkmrksk/gantu-tag/blob/main/docs/programming.md">programming guide</a>.</p></div>
+    <div class="step"><h3>Finish</h3><p>Break the tag out, solder a ~31 mm antenna wire, fit the cell on Irulu, cut the tail and coat in epoxy. Steps for <a href="https://github.com/pvnkmrksk/gantu-tag/blob/main/hagalu/README.md">Hagalu</a> and <a href="https://github.com/pvnkmrksk/gantu-tag/blob/main/irulu/README.md">Irulu</a>.</p></div>
+  </div>
+</div></section>
+
+<section id="bom"><div class="wrap">
+  <h2>Bill of materials &amp; cost</h2>
+  <p class="sub">Parts per tag, all placed by JLCPCB from its own library. You add only the antenna wire, the cell (Irulu) and epoxy.</p>
+
+  <div class="cost">
+    <div class="stat"><b>≈ €7</b><span>per assembled tag, first order (36 tags)</span></div>
+    <div class="stat"><b>≈ €6</b><span>parts per Hagalu tag</span></div>
+    <div class="stat"><b>≈ €2.30</b><span>parts per Irulu tag</span></div>
+  </div>
+
+  <h3 class="t">Hagalu Gantu</h3>
+  <div class="tw"><table>
+    <tr><th>Ref</th><th>Part</th><th>Package</th><th>LCSC</th><th class="n">Qty</th><th>Fitted on</th></tr>
+    <tr><td>U1</td><td>InPlay IN100-Q1-R-RC1I BLE beacon SoC</td><td>QFN-18 3×3</td><td><code>C6062024</code></td><td class="n">1</td><td>all</td></tr>
+    <tr><td>Y1</td><td>26 MHz crystal, 7 pF (TXC 8Q26000008)</td><td>1612</td><td><code>C5203638</code></td><td class="n">1</td><td>all</td></tr>
+    <tr><td>C1</td><td>100 µF 6.3 V X5R (Murata GRM21BR60J107ME15L)</td><td>0805</td><td><code>C141660</code></td><td class="n">1</td><td>all</td></tr>
+    <tr><td>PD1–6</td><td>Vishay TEMD7000X01 photodiode</td><td>0805</td><td><code>C145328</code></td><td class="n">6</td><td>all</td></tr>
+    <tr><td>C4</td><td>100 nF</td><td>0402</td><td><code>C1525</code></td><td class="n">1</td><td>all</td></tr>
+    <tr><td>C5</td><td>330 nF 10 V X5R</td><td>0402</td><td><code>C107013</code></td><td class="n">1</td><td>all</td></tr>
+    <tr><td>U2</td><td>TI TPS3831G18DQNR voltage supervisor</td><td>X2SON-4 1×1</td><td><code>C2066667</code></td><td class="n">1</td><td>S6, S6L</td></tr>
+    <tr><td>D2</td><td>onsemi RB751S40T1G Schottky</td><td>SOD-523</td><td><code>C232576</code></td><td class="n">1</td><td>S6, S6L</td></tr>
+    <tr><td>R2</td><td>3.3 MΩ / 10 MΩ</td><td>0402</td><td><code>C270613</code> / <code>C26082</code></td><td class="n">1</td><td>S6 / S6L</td></tr>
+    <tr><td>R1</td><td>1 MΩ</td><td>0402</td><td><code>C26083</code></td><td class="n">1</td><td>N6</td></tr>
+  </table></div>
+
+  <h3 class="t">Irulu Gantu</h3>
+  <div class="tw"><table>
+    <tr><th>Ref</th><th>Part</th><th>Package</th><th>LCSC</th><th class="n">Qty</th><th>Fitted on</th></tr>
+    <tr><td>U1</td><td>InPlay IN100-Q1-R-RC1I BLE beacon SoC</td><td>QFN-18 3×3</td><td><code>C6062024</code></td><td class="n">1</td><td>all</td></tr>
+    <tr><td>Y1</td><td>26 MHz crystal, 7 pF (TXC 8Q26000008)</td><td>1612</td><td><code>C5203638</code></td><td class="n">1</td><td>all</td></tr>
+    <tr><td>C1</td><td>100 µF 6.3 V X5R (Murata GRM21BR60J107ME15L)</td><td>0805</td><td><code>C141660</code></td><td class="n">1</td><td>all</td></tr>
+    <tr><td>C4</td><td>100 nF</td><td>0402</td><td><code>C1525</code></td><td class="n">1</td><td>all</td></tr>
+    <tr><td>R1</td><td>1 MΩ / 100 kΩ</td><td>0402</td><td><code>C26083</code> / <code>C25741</code></td><td class="n">1</td><td>V1 / V2</td></tr>
+    <tr><td>C2</td><td>100 nF / 10 nF</td><td>0402</td><td><code>C1525</code> / <code>C15195</code></td><td class="n">1</td><td>V1 / V2</td></tr>
+    <tr><td>—</td><td>Silver-oxide cell (SR416SW/337, 364 or 377), added by hand</td><td>—</td><td>—</td><td class="n">1</td><td>all</td></tr>
+  </table></div>
+
+  <h3 class="t">First order (6 Nov 2026)</h3>
+  <div class="tw"><table>
+    <tr><th>Item</th><th class="n">Estimate</th></tr>
+    <tr><td>Parts for 2 assembled panels (36 tags)</td><td class="n">≈ €150</td></tr>
+    <tr><td>Setup, stencil, extended-part fees, fixture</td><td class="n">≈ €75</td></tr>
+    <tr><td>5 bare 0.6 mm panels, two-design fee, ENIG</td><td class="n">≈ €20–50</td></tr>
+    <tr><td><b>Total before shipping and VAT</b></td><td class="n"><b>≈ €250–280</b></td></tr>
+  </table></div>
+  <p class="small">The IN100 (≈ $2.60 each) and the six photodiodes (≈ $0.87 each) are most of the parts cost. Ordering 5 assembled panels instead of 2 gives 90 tags at roughly three quarters of the per-tag cost. Prices and stock are from November 2026: the JLC cart is the real number. Full panel BOM and placement files: <a href="https://github.com/pvnkmrksk/gantu-tag/tree/main/panel/fab/jlcpcb_panel">panel/fab/jlcpcb_panel</a>.</p>
+</div></section>
+
+<section id="name"><div class="wrap">
+  <h2>About the name</h2>
+  <p class="sub">The names are Kannada.</p>
+  <div class="tw"><table class="name">
+    <tr><th>Name</th><th>Kannada</th><th>Say it</th><th>IPA</th><th>Meaning</th></tr>
+    <tr><td>Gantu</td><td>ಗಂಟು</td><td><i>gun-two</i></td><td>/ɡəɳʈu/</td><td>A knot; also a small bundle tied up to carry</td></tr>
+    <tr><td>Hagalu</td><td>ಹಗಲು</td><td><i>huh-guh-loo</i></td><td>/ɦəɡəlu/</td><td>Daytime</td></tr>
+    <tr><td>Irulu</td><td>ಇರುಳು</td><td><i>ih-roo-loo</i></td><td>/iruɭu/</td><td>Night</td></tr>
+  </table></div>
+  <p class="small">A tag is something you tie onto an animal, so it's a gantu. Hagalu runs only when there's light; Irulu keeps going through the night. The logo is one thread tied in a trefoil knot, shading from turmeric ochre into indigo.</p>
+</div></section>
+
+<footer><div class="wrap">
+  Hardware and documentation: <a href="https://github.com/pvnkmrksk/gantu-tag/blob/main/LICENSE">CC BY-SA 4.0</a>. No warranty: you build and use these at your own risk.<br>
+  Designed by Pavan Kumar Kaushik, Max Planck Institute of Animal Behaviour, Konstanz. · <a href="https://github.com/pvnkmrksk/gantu-tag">github.com/pvnkmrksk/gantu-tag</a>
+</div></footer>
+</body>
+</html>
