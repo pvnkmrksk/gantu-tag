@@ -58,7 +58,7 @@ dt{color:var(--muted)}dd{margin:0}
 @media(max-width:760px){.steps{grid-template-columns:1fr}}
 .step{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px 20px}
 .step h3{margin:0 0 6px;font-size:18px}
-.step h3::before{counter-increment:s;content:counter(s);display:inline-grid;place-items:center;width:26px;height:26px;border-radius:50%;background:var(--ink);color:#fff;font-size:14px;margin-right:9px}
+.steps:not(.nonum) .step h3::before{counter-increment:s;content:counter(s);display:inline-grid;place-items:center;width:26px;height:26px;border-radius:50%;background:var(--ink);color:#fff;font-size:14px;margin-right:9px}
 .step p{margin:0;font-size:15px;color:#3a3d48}
 table{width:100%;border-collapse:collapse;font-size:14.5px;background:var(--card);border:1px solid var(--line);border-radius:14px;overflow:hidden}
 th,td{text-align:left;padding:8px 12px;border-bottom:1px solid var(--line);vertical-align:top}
@@ -82,7 +82,7 @@ footer{padding:36px 0 60px;border-top:1px solid var(--line);color:var(--muted);f
 <body>
 <nav><div class="wrap">
   <a class="brand" href="#top"><img src="img/gantu.svg" alt="">gantu-tag</a>
-  <div class="links"><a href="#tags">Tags</a><a href="#build" class="opt">Build</a><a href="#bom">BOM &amp; cost</a><a href="https://github.com/pvnkmrksk/gantu-tag">GitHub</a></div>
+  <div class="links"><a href="#tags">Tags</a><a href="#approach" class="opt">Approach</a><a href="#build" class="opt">Build</a><a href="#bom">BOM &amp; cost</a><a href="https://github.com/pvnkmrksk/gantu-tag">GitHub</a></div>
 </div></nav>
 
 <header id="top"><div class="wrap">
@@ -136,6 +136,19 @@ footer{padding:36px 0 60px;border-top:1px solid var(--line);color:var(--muted);f
     <div class="panel"><img src="img/panel-top.jpg" alt="Render of the combined 0.6 mm panel" loading="lazy"><p class="small">The design render.</p></div>
   </div>
   <p class="small">94.9 × 71.1 mm, 2 layers, 0.6 mm FR-4. Each panel carries 10 Hagalu and 8 Irulu tags; the variant is printed on each tag's underside.</p>
+</div></section>
+
+<section id="approach"><div class="wrap">
+  <h2>Approach</h2>
+  <p class="sub">No GPS and no receiver on the tag: it only broadcasts a Bluetooth LE advert every few seconds. Phones and gateways on an existing network hear it and report where they were, and you fetch those reports.</p>
+  <div class="steps nonum">
+    <div class="step"><h3>One chip, configured</h3><p>The InPlay <a href="https://inplay-tech.com/in100">IN100 NanoBeacon</a> runs no firmware. You load a configuration over UART, test it in RAM, then burn it once into OTP. The tag is just the chip, a crystal and a few capacitors.</p></div>
+    <div class="step"><h3>Apple Find My</h3><p>Via <a href="https://github.com/seemoo-lab/openhaystack">OpenHaystack</a>: the tag sends a fixed-key Find My advert, nearby iPhones relay its position to Apple, and you decrypt the reports with your private key. Free per tag.</p></div>
+    <div class="step"><h3>Hubble Network</h3><p>The IN100 is supported by <a href="https://hubble.com">Hubble</a>: adverts are picked up by its terrestrial network of phones and gateways and, as its next satellites arrive, from orbit. Paid, with a free starter tier.</p></div>
+    <div class="step"><h3>Built by JLCPCB</h3><p>Every part is placed from JLCPCB's own stock on a 2-layer 0.6 mm board. You add only the antenna wire, the cell (Irulu) and epoxy.</p></div>
+    <div class="step"><h3>Started by cutting</h3><p>Programming pads sit on a tail. Like commercial bat and insect tags, you program, then cut the tail off; on Irulu V2 the cut is what switches it on.</p></div>
+    <div class="step"><h3>Pilots first</h3><p>The first panel carries several variants of each tag (S6/S6L/N6, V1/V2), so one order shows which start circuit works before anyone builds in bulk.</p></div>
+  </div>
 </div></section>
 
 <section id="build"><div class="wrap">
@@ -209,7 +222,7 @@ footer{padding:36px 0 60px;border-top:1px solid var(--line);color:var(--muted);f
 </div></section>
 
 <footer><div class="wrap">
-  Hardware and documentation: <a href="https://github.com/pvnkmrksk/gantu-tag/blob/main/LICENSE">CC BY-SA 4.0</a>. No warranty: you build and use these at your own risk.<br>
+  Permissive, with attribution: hardware, docs and logo under <a href="https://github.com/pvnkmrksk/gantu-tag/blob/main/LICENSE">CC BY 4.0</a>; scripts and this site under <a href="https://github.com/pvnkmrksk/gantu-tag/blob/main/LICENSE-CODE">MIT</a>. Credit “gantu-tag by Pavan Kumar Kaushik”. No warranty: you build and use these at your own risk.<br>
   Designed by Pavan Kumar Kaushik, Max Planck Institute of Animal Behaviour, Konstanz. · <a href="https://github.com/pvnkmrksk/gantu-tag">github.com/pvnkmrksk/gantu-tag</a>
 </div></footer>
 </body>
