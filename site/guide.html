@@ -227,6 +227,7 @@
 
 <section id="follow"><div class="wrap">
   <h2><span class="n">8</span>Follow it</h2>
+  <p><a href="https://github.com/pvnkmrksk/gantu-tag/blob/main/docs/dashboard.md">Self-host the Gantu dashboard</a> on a Pi or laptop to collect both networks, map each tag's history, and read the Hubble sensor payload.</p>
   <div class="steps nonum">
     <div class="step"><h3>Find My</h3><p>Nearby iPhones report the tag's position to Apple, encrypted to your key. Fetch and decrypt the reports with the private key from your <code>.keys</code> file, using an OpenHaystack-compatible fetcher such as <a href="https://github.com/malmeloo/FindMy.py">FindMy.py</a> or <a href="https://github.com/dchristl/macless-haystack">macless-haystack</a> (Docker; it runs on a Raspberry Pi). Both need an Apple ID.</p></div>
     <div class="step"><h3>Hubble</h3><p>Packets show up in the Hubble app and dashboard. Hubble's packets API and webhooks return each packet with the relay's location and the payload already decrypted, as base64; <code>parse_sensors()</code> in <code>hubble_decode.py</code> turns it into VCC, temperature and advert count.</p></div>

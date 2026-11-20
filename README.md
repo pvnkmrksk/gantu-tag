@@ -9,7 +9,8 @@ a node.
 [More about the name](#about-the-name).
 
 **Website:** https://pvnkmrksk.github.io/gantu-tag/ · **Build guide:** [step by step](docs/guide.md)
-([on the website](https://pvnkmrksk.github.io/gantu-tag/guide.html), with a form that turns your key into a config)
+([on the website](https://pvnkmrksk.github.io/gantu-tag/guide.html), with a form that turns your key into a config) ·
+**Dashboard:** [self-host on a Pi or laptop](docs/dashboard.md)
 
 These are **early pilots**. The first panels were ordered on 6 November 2026 and arrived assembled on 19 November;
 bench testing has started. **First result, the same evening:** a Hagalu S6, configured over UART and run from RAM
@@ -107,6 +108,13 @@ The [build guide](docs/guide.md) walks through every step, with photos. In short
 |---|---|
 | <img src="docs/photos/jig_pins_rubber_band_2026-11-20.jpg" width="300" alt="Four header pins in jumper wires, held square by an elastic band, next to a tail with holes marked G, R, T and +"> | **G** (square hole) → GND<br>**+** → 3V3 (never 5 V)<br>**R** → TXD<br>**T** → RXD<br><br>Seat the jig first, then plug in the USB. |
 
+## Follow your tags
+
+The [self-hosted dashboard](docs/dashboard.md) is the map we used for the first walk. Run it on a laptop or leave
+it collecting on a Raspberry Pi. It handles Find My and Hubble in the same device list, including voltage,
+temperature and advert count from the Gantu Hubble payload. Each tag keeps its own history. Your keys, history
+and logs stay on the host. A Pi can start collecting at boot and keep the same HTTPS address through a named tunnel.
+
 ## Roadmap
 
 Lighter first, then simpler, then cheaper. The full plan, with mass targets, is in [`docs/roadmap.md`](docs/roadmap.md).
@@ -129,7 +137,8 @@ On Irulu the 0.13 g cell is the floor; everything else can shrink to ≈ 0.03–
 | [`order/`](order/) | The exact files sent to JLCPCB, with a checksum |
 | [`configs/`](configs/) | Find My and Hubble config templates for InPlay's Config Tool: add your key |
 | [`tools/`](tools/) | Make a tag's key and config (`new_findmy_tag.py`, `new_hubble_tag.py`); decode a Hubble advert (`hubble_decode.py`) |
-| [`docs/`](docs/) | [Build guide](docs/guide.md), [programming](docs/programming.md), [roadmap](docs/roadmap.md), [tag records](docs/tags.md), the v8 handover and build notes, photos, the logo |
+| [`dashboard/`](dashboard/) | Private tracker and collector for a [Pi or laptop](docs/dashboard.md), with systemd services for boot and local backups |
+| [`docs/`](docs/) | [Build guide](docs/guide.md), [programming](docs/programming.md), [dashboard setup](docs/dashboard.md), [roadmap](docs/roadmap.md), [tag records](docs/tags.md), the v8 handover and build notes, photos, the logo |
 | [`site/`](site/) | The website ([publish it](site/publish.sh) to the `gh-pages` branch) |
 
 ## History
@@ -168,8 +177,9 @@ spread over however many tags you order. The first order (5 bare panels, 2 assem
 Permissive, with attribution:
 
 - **Hardware designs, documentation, renders and the logo:** [CC BY 4.0](LICENSE).
-- **Scripts** (the Python and shell in `tools/` and `*/tools/`, `docs/logo/make_logo.py`) **and the website:**
-  [MIT](LICENSE-CODE).
+- **Scripts** (the Python and shell in `tools/` and `*/tools/`, `docs/logo/make_logo.py`), **the dashboard and the
+  website:** [MIT](LICENSE-CODE). The bundled dashboard assets keep their
+  [MapLibre](dashboard/assets/MAPLIBRE-LICENSE) and [D3](dashboard/assets/D3-COLOR-LICENSE) licences.
 
 You can use, change, sell and build on all of it, commercially or not, as long as you credit the source. A line
 like this is enough:
