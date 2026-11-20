@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Build guide · gantu-tag</title>
+<meta name="description" content="Step by step: order gantu-tag panels from JLCPCB, fit the antenna, make a four-pin jig, add your Find My or Hubble key to a ready-made config, burn it, and follow the tag.">
+<meta property="og:title" content="gantu-tag build guide">
+<meta property="og:description" content="From a JLCPCB order to an insect tag reporting through Apple Find My or Hubble, step by step, with ready-made configs.">
+<meta property="og:image" content="https://pvnkmrksk.github.io/gantu-tag/img/og.jpg">
+<meta property="og:url" content="https://pvnkmrksk.github.io/gantu-tag/guide.html">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" type="image/svg+xml" href="img/gantu.svg">
+<link rel="icon" type="image/png" sizes="32x32" href="img/favicon-32.png">
+<link rel="apple-touch-icon" href="img/apple-touch-icon.png">
+<meta name="theme-color" content="#FBF5E9">
+<link rel="stylesheet" href="style.css">
+<script src="configure.js" defer></script>
+</head>
+<body class="guide">
+<nav><div class="wrap">
+  <a class="brand" href="./"><img src="img/gantu.svg" alt="">gantu-tag</a>
+  <div class="links"><a href="./">Home</a><a href="#downloads" class="opt">Downloads</a><a href="#configure">Configure</a><a href="https://github.com/pvnkmrksk/gantu-tag" class="opt">GitHub</a></div>
+</div></nav>
+
+<header id="top"><div class="wrap">
+  <h1>Build guide</h1>
+  <p class="lede">From a JLCPCB order to a tag that reports where it's been. No firmware to write and no fine-pitch soldering: you fit a wire, load a configuration over four pins, and burn it.</p>
+  <div class="toc">
+    <a href="#shop">1 · Shopping list</a><a href="#order">2 · Order</a><a href="#break">3 · Break out</a><a href="#antenna">4 · Antenna</a><a href="#jig">5 · Jig</a><a href="#program">6 · Program</a><a href="#finish">7 · Finish</a><a href="#follow">8 · Follow it</a><a href="#downloads">Downloads</a>
+  </div>
+  <p class="note">Budget about €250–300 for the first order (36 tags) and €15–25 for tools you may not have. These are early pilots: check the <a href="https://github.com/pvnkmrksk/gantu-tag#readme">latest notes</a> before you spend money.</p>
+</div></header>
+
+<section id="downloads"><div class="wrap">
+  <h2>Downloads</h2>
+  <p class="sub">Everything you need besides InPlay's tool. The config templates are complete except for the key; the <a href="#configure">form below</a> writes it in for you.</p>
+  <div class="dl">
+    <a href="files/insect_tag_v8.3_jlc_order.zip" download><b>JLC order files (zip)</b><span>Gerbers, BOM and placement, exactly as ordered on 6 Nov 2026</span></a>
+    <a href="files/findmy-template.cfg" download><b>findmy-template.cfg</b><span>Apple Find My: 3 s, 0 dBm. Key zeroed.</span></a>
+    <a href="files/hubble-template.cfg" download><b>hubble-template.cfg</b><span>Hubble: 4 s, 0 dBm, VCC + temperature payload. Key zeroed.</span></a>
+    <a href="files/new_findmy_tag.py" download><b>new_findmy_tag.py</b><span>Make a Find My key pair and its .cfg (Python 3)</span></a>
+    <a href="files/new_hubble_tag.py" download><b>new_hubble_tag.py</b><span>Write your Hubble key into a .cfg (Python 3)</span></a>
+    <a href="files/hubble_decode.py" download><b>hubble_decode.py</b><span>Check a Hubble advert and read its payload</span></a>
+    <a href="https://inplay-tech.com/in100"><b>NanoBeacon Config Tool</b><span>InPlay's free tool for Windows, macOS and Linux</span></a>
+    <a href="https://github.com/pvnkmrksk/gantu-tag/archive/refs/heads/main.zip"><b>Everything (repository zip)</b><span>Design files, scripts, configs and docs</span></a>
+  </div>
+  <p class="small">Put the scripts and the templates in the same folder, or clone the repository. Keys and finished configs go to <code>~/gantu-keys/</code> (or <code>$GANTU_KEYS</code>): keep that folder private and backed up.</p>
+</div></section>
+
+<section id="shop"><div class="wrap">
+  <h2><span class="n">1</span>Shopping list</h2>
+  <div class="tw"><table>
+    <tr><th>What</th><th>Get</th><th>Notes</th></tr>
+    <tr><td><b>The tags</b></td><td>One JLCPCB order: 2 assembled panels, 20 Hagalu + 16 Irulu</td><td>≈ €250–280 before shipping and VAT (Nov 2026)</td></tr>
+    <tr><td><b>USB-to-serial adapter, 3.3 V</b></td><td>A CP2102 module with pins DTR, RXD, TXD, +5V, GND, 3V3, such as <a href="https://www.waveshare.com/cp2102-usb-uart-board-type-c.htm">Waveshare's CP2102 board</a> or any generic one</td><td>Its 3V3 pin must supply ≥ 100 mA; the generic CP2102 in the photos burned tags from it. <b>Never 5 V logic.</b> CH340, CP2104 and FTDI boards at 3.3 V work too; an FT232R's 3V3OUT is too weak.</td></tr>
+    <tr><td><b>Jig</b></td><td>4 female-to-female Dupont jumpers, a 2 × 2 block of 2.54 mm male header pins, a rubber band or hair tie</td><td>See <a href="#jig">step 5</a></td></tr>
+    <tr><td><b>Antenna wire</b></td><td>≈ 0.1 mm enamelled copper (magnet wire, ≈ 38 AWG), solderable enamel if you can get it</td><td>31 mm per arm, ≈ 2 mg. Plain thin copper also works.</td></tr>
+    <tr><td><b>Irulu only</b></td><td>SR416SW (337) silver-oxide cells (Renata or Maxell); silver conductive epoxy such as <a href="https://mgchemicals.com/products/adhesives/electrically-conductive-adhesives/silver-epoxy/">MG Chemicals 8331D</a>; Kapton tape; 0.2 mm tinned wire</td><td>Buy <b>SR</b>, not LR/AG (alkaline). Never solder to a cell.</td></tr>
+    <tr><td><b>Tools</b></td><td>Fine-tip soldering iron, flux, tweezers, scalpel, flush cutter, fine sandpaper, thin clear epoxy</td><td></td></tr>
+    <tr><td><b>Phone</b></td><td>nRF Connect; the Hubble app for Hubble tags; a lux meter app for Hagalu</td><td>iOS hides BLE addresses; InPlay's NanoBeacon scanner app shows them</td></tr>
+  </table></div>
+</div></section>
+
+<section id="order"><div class="wrap">
+  <h2><span class="n">2</span>Order the panels from JLCPCB</h2>
+  <ol>
+    <li>Download the <a href="files/insect_tag_v8.3_jlc_order.zip">order zip</a> and unzip it: a Gerber zip, the BOM and the placement (CPL) file.</li>
+    <li>At <a href="https://jlcpcb.com">jlcpcb.com</a>, start an order and upload <code>insect_tag_v8_combined_panel_gerbers.zip</code>.</li>
+    <li>Set the PCB options:
+      <div class="tw" style="margin:10px 0"><table>
+        <tr><th>Setting</th><th>Value</th></tr>
+        <tr><td>Layers, material</td><td>2, FR-4</td></tr>
+        <tr><td>Different Design in Panel</td><td><b>2</b></td></tr>
+        <tr><td>Delivery format</td><td><b>Panel by Customer</b> (frame, tooling holes and fiducials are in the Gerbers)</td></tr>
+        <tr><td>PCB qty</td><td>5 (the minimum)</td></tr>
+        <tr><td><b>Thickness</b></td><td><b>0.6 mm</b></td></tr>
+        <tr><td>Surface finish</td><td>ENIG recommended (LeadFree HASL also works)</td></tr>
+        <tr><td>Mark on PCB</td><td>Specify a location (the <code>JLCJLCJLCJLC</code> text on the bottom rail)</td></tr>
+        <tr><td>Via covering</td><td>Tented</td></tr>
+        <tr><td>Everything else</td><td>Default</td></tr>
+      </table></div></li>
+    <li>Turn on <b>PCB Assembly</b>: <b>Standard</b> (Economic only takes 0.8–1.6 mm boards), top side, <b>2</b> panels, tooling holes added by customer, confirm parts placement: yes.</li>
+    <li>Upload <code>insect_tag_v8_combined_panel_bom.csv</code> as the BOM and <code>insect_tag_v8_combined_panel_pos.csv</code> as the CPL. Check stock: the IN100 (<code>C6062024</code>) and the TPS3831 (<code>C2066667</code>) were the tight ones.</li>
+    <li><b>Check the placement preview</b> before paying:
+      <ul>
+        <li>U1 (IN100): the pin-1 dot sits next to the crystal.</li>
+        <li>Y1 (crystal): a 90° rotation shorts it to GND and kills the tag; 180° is harmless.</li>
+        <li>U2 (TPS3831, Hagalu S tags only): pin-1 dot at the upper left. D2 (RB751): cathode bar towards C5.</li>
+        <li>Photodiodes: pad 1 is the cathode, marked by the silk bar; the middle row of each 2 × 3 block is turned 180°.</li>
+        <li>The bottom row of the panel is turned 180°, so its marks are too. Fix offsets in JLC's preview, not in the files.</li>
+      </ul></li>
+    <li>Pay. The first order took 13 days to arrive. You get 2 assembled panels (8 Hagalu S6, 8 S6L, 4 N6, 8 Irulu V1, 8 V2) and 3 bare ones. The variant is printed on each tag's underside.</li>
+  </ol>
+  <p class="small">Details and reasoning: <a href="https://github.com/pvnkmrksk/gantu-tag/blob/main/order/README.md">order/README.md</a> and <a href="https://github.com/pvnkmrksk/gantu-tag/blob/main/panel/README.md">panel/README.md</a>.</p>
+</div></section>
+
+<section id="break"><div class="wrap">
+  <h2><span class="n">3</span>Break out a tag</h2>
+  <div class="figs" style="max-width:520px"><figure><img src="img/panel-photo.jpg" alt="An assembled panel as it arrived from JLCPCB" loading="lazy"><figcaption>An assembled panel, as it arrived.</figcaption></figure></div>
+  <ul>
+    <li><b>Keep the tail on</b>: it carries the four programming holes.</li>
+    <li><b>Don't snap the body out.</b> Cut its tab with a flush cutter or scalpel from the panel side while supporting the tag, then sand the nub. C1 and U2 sit 0.2 mm from the long edges.</li>
+    <li>The tail's tabs are wide; snap or cut those however you like.</li>
+  </ul>
+</div></section>
+
+<section id="antenna"><div class="wrap">
+  <h2><span class="n">4</span>Fit the antenna wire</h2>
+  <p class="sub">One or two straight wires, each <b>31 mm</b>: a quarter wave at 2.44 GHz.</p>
+  <div class="figs">
+    <figure><img src="img/hagalu-bottom.jpg" alt="Hagalu underside with the ANT and GND edge pads" loading="lazy"><figcaption><b>Hagalu, underside.</b> ANT: the 1.2 × 1.0 mm pad on the right edge, level with the IN100. GND: the same size, lower left.</figcaption></figure>
+    <figure><img src="img/irulu-top.jpg" alt="Irulu top with the ANT rim pad" loading="lazy"><figcaption><b>Irulu, top.</b> ANT: the 1.2 × 0.9 mm pad on the upper-right rim, ANT printed below it. GND: the slim pad on the lower-left rim, about 8 o'clock.</figcaption></figure>
+  </div>
+  <ol>
+    <li>Cut 31 mm of ≈ 0.1 mm enamelled copper. Strip the last 1–2 mm (scrape it, or melt solderable enamel off with a hot iron) and tin it.</li>
+    <li>Add flux to the <b>ANT</b> pad, lay the wire flat along it so it leaves over the edge, and reflow.</li>
+    <li>For a <b>dipole</b> (recommended on Hagalu, and on Irulu for Hubble or long range): a second 31 mm wire on the <b>GND</b> pad, leaving the opposite way. Never join the two wires.</li>
+    <li>Keep the joints low: Hagalu's underside faces the insect.</li>
+  </ol>
+  <p class="tip"><b>Which wire?</b> Thin enamelled copper is light (≈ 2.2 mg per 31 mm at 0.1 mm, ≈ 8.7 mg at 0.2 mm) and easy to solder, but it kinks. Next on the roadmap: superelastic nitinol wire, which springs back straight, glued on with silver epoxy instead of solder. See the <a href="./#roadmap">roadmap</a>.</p>
+</div></section>
+
+<section id="jig"><div class="wrap">
+  <h2><span class="n">5</span>Make the programming jig</h2>
+  <p class="sub">Four jumper wires, four header pins and a rubber band. No pogo pins, no clamp, and it holds steady for the whole programming run.</p>
+  <div class="figs">
+    <figure><img src="img/jig-cp2102-dupont.jpg" alt="A CP2102 USB-serial adapter with four jumper wires ending in a block of four header pins held by an elastic band, next to a cut-off programming tail" loading="lazy"><figcaption>The jig on a CP2102 adapter. In front, a tail that has been cut off.</figcaption></figure>
+    <figure><img src="img/jig-pins-rubber-band.jpg" alt="Close-up of the four pins and the tail's four holes marked G, R, T and +" loading="lazy"><figcaption>The four pins held square by the band, and the tail's holes: G (square), R, T, +.</figcaption></figure>
+  </div>
+  <p>The tail has four plated holes on a 2.54 mm grid, 0.8 mm drill. A square 0.64 mm header pin is ≈ 0.9 mm across its corners, so it wedges into the hole and holds by itself.</p>
+  <ol>
+    <li>Push a <b>2 × 2 block of male header pins</b> into the female ends of <b>four jumper wires</b>. Two 2-pin pieces snapped off a strip work.</li>
+    <li><b>Wrap a rubber band</b> tightly round the four jumper housings so they can't splay. The pins now sit rigidly on the same grid as the holes.</li>
+    <li>Wire the other ends to the adapter. The letters are printed next to each hole on the tail, and the <b>square hole is G</b>:
+      <div class="tw" style="margin:10px 0;max-width:520px"><table>
+        <tr><th>Tail</th><th>Adapter</th></tr>
+        <tr><td><b>G</b> (square)</td><td>GND</td></tr>
+        <tr><td><b>+</b></td><td><b>3V3</b> (never +5V)</td></tr>
+        <tr><td><b>R</b> (into the IN100)</td><td>TXD</td></tr>
+        <tr><td><b>T</b> (out of the IN100)</td><td>RXD</td></tr>
+      </table></div>
+      G and T sit diagonally opposite each other, as do R and +. Leave DTR and +5V empty. If the tool can't find the chip, swap R and T: that's the usual mistake.</li>
+    <li><b>Seat the jig in the tag first, then plug the adapter into USB.</b> All four pins make contact before anything is powered, so the serial line can't back-power the chip. To power-cycle, unplug the USB, not the jig.</li>
+  </ol>
+</div></section>
+
+<section id="program"><div class="wrap">
+  <h2><span class="n">6</span>Program the tag</h2>
+  <p class="sub">The IN100 runs no firmware. A configuration (address, advert, interval, TX power, key) goes in over the serial port: first into RAM, where it's lost at power-off, then <b>once</b> into one-time-programmable memory.</p>
+  <p class="warn"><b>Hagalu: program in dim light.</b> <b>Irulu: program before the cell goes on</b>, and never connect the jig once a cell is fitted: it would drive 3.3 V into the cell.</p>
+
+  <h3>6.1 Pick a network</h3>
+  <div class="tw"><table>
+    <tr><th></th><th>Apple Find My (OpenHaystack)</th><th>Hubble Network</th></tr>
+    <tr><td>Who hears it</td><td>Any nearby iPhone</td><td>Phones running a Hubble-enabled app, and Hubble's gateways</td></tr>
+    <tr><td>On a walk through town (20 Nov 2026)</td><td>Dense: well over a hundred sightings in an afternoon</td><td>Sparse: 25 packets</td></tr>
+    <tr><td>Location</td><td>The relaying iPhone's estimate: ±73–102 m in our reports</td><td>The relaying phone's GPS fix (±2.4 m in the example)</td></tr>
+    <tr><td>Sensor data</td><td>None: the whole advert is the key</td><td>7 encrypted bytes: VCC, temperature, advert count</td></tr>
+    <tr><td>Cost</td><td>Free; needs an Apple ID to fetch reports</td><td>Hubble account; free starter tier</td></tr>
+    <tr><td>Key</td><td>You make it (the form below, or the script)</td><td>Hubble issues it when you register the device</td></tr>
+  </table></div>
+
+  <h3 id="configure">6.2 Make the key and the config</h3>
+  <p>The configs are 0 dBm, 1 Mbps, all three advertising channels, XO cap code 8; Find My every 3 s, Hubble every 4 s. They ran on real tags. This form only writes your key into them. It runs in your browser: <b>the key isn't sent anywhere</b>.</p>
+  <div class="tool" id="tool">
+    <div class="tabs"><button type="button" id="tab-fm" class="on">Find My</button><button type="button" id="tab-hb">Hubble</button></div>
+    <div id="pane-fm">
+      <label for="fm-name">Tag name</label>
+      <input type="text" id="fm-name" value="hagalu_01" autocomplete="off" spellcheck="false">
+      <label for="fm-adv">Advertisement (public) key, base64: leave empty to make a new key pair</label>
+      <input type="text" id="fm-adv" placeholder="e.g. from OpenHaystack or an earlier .keys file" autocomplete="off" spellcheck="false">
+      <button type="button" id="fm-go">Make the config</button>
+      <div class="out" id="fm-out"></div>
+    </div>
+    <div id="pane-hb" hidden>
+      <p class="small" style="margin:4px 0 0">First register a device in the Hubble dashboard with encryption <b>AES-128-EAX</b>, counter mode <b>DEVICE_UPTIME</b>, period exponent <b>15</b>. If these don't match, Hubble silently drops the packets.</p>
+      <label for="hb-name">Tag name</label>
+      <input type="text" id="hb-name" value="hagalu_002" autocomplete="off" spellcheck="false">
+      <label for="hb-key">Hubble device key: 32 hex characters or base64</label>
+      <input type="text" id="hb-key" autocomplete="off" spellcheck="false">
+      <button type="button" id="hb-go">Make the config</button>
+      <div class="out" id="hb-out"></div>
+    </div>
+  </div>
+  <p class="small">Prefer the command line? <code>python3 new_findmy_tag.py hagalu_01</code> or <code>python3 new_hubble_tag.py hagalu_002</code> (<a href="#downloads">downloads</a>) write the same files, byte for byte, and keep a private record of each key. For Hubble you can also edit the template by hand: replace the 32 zeros in <code>"key0"</code> with your key in hex.</p>
+
+  <h3>6.3 Test it in RAM</h3>
+  <ol>
+    <li>Open the NanoBeacon Config Tool and <b>Load</b> your <code>.cfg</code>. Leave the advertising data format on <b>Custom</b> (the tool's own "Hubble" format sends the payload unencrypted).</li>
+    <li>Seat the jig in the tag and plug the adapter in: a <b>fresh power-up</b>.</li>
+    <li><b>Probe</b>, pick the port (<code>/dev/cu.usbserial-…</code> on a Mac, <code>COM…</code> on Windows) and <b>Connect</b> straight away.</li>
+    <li><b>Run in RAM.</b> The tag starts advertising.</li>
+    <li>Check it on the phone:
+      <ul>
+        <li><b>Find My:</b> nRF Connect shows manufacturer data <code>0x004C</code> with raw data starting <code>1EFF4C00121900</code>, no flags. The form above shows the exact bytes and address to expect.</li>
+        <li><b>Hubble:</b> service data for UUID <code>0xFCA6</code>. Open the Hubble app near the tag. To check it yourself: <code>python3 hubble_decode.py hagalu_002.hubble.key &lt;service data hex&gt;</code> prints VCC, temperature and the advert count.</li>
+      </ul></li>
+  </ol>
+  <p class="tip"><b>One RAM load per power-up.</b> Once a configuration runs, the chip stops answering the tool: Connect fails, or Run in RAM reports Done and changes nothing. To load another one, Load it in the tool, unplug and replug the USB, Connect straight away, and Run in RAM once.</p>
+
+  <h3>6.4 Burn it</h3>
+  <p>When the RAM test works: power-cycle, Connect straight away, and <b>Program</b> (burn) instead of Run in RAM. <b>This can be done only once per tag.</b> Write down which key went on which tag. The tool keeps a copy of what it sent in its log folder (<code>nano_beacon_config.cfg</code>): compare it with your file.</p>
+  <p>Unplug: the tag now runs on its own. A Hagalu advertises only in light (steady from about 1.9 klx: a desk lamp at 20–30 cm, daylight, or a well-lit shop). An Irulu advertises once its cell is fitted.</p>
+</div></section>
+
+<section id="finish"><div class="wrap">
+  <h2><span class="n">7</span>Finish the tag</h2>
+  <div class="tags">
+    <div class="step"><h3>Hagalu</h3><ol>
+      <li>Cut the tail at <b>CUT</b>: score both faces with a scalpel and snap, or file through. Side cutters can smear VCC and GND together.</li>
+      <li>Clean off the flux and seal the cut edge with a dot of epoxy.</li>
+      <li>Coat the photodiodes thinly with clear, unpigmented epoxy. Keep all six equally lit: the most shaded one sets the current.</li>
+      <li>Store tags in the dark.</li>
+    </ol></div>
+    <div class="step"><h3>Irulu</h3><ol>
+      <li>V2 only: bridge the <b>OFF</b> jumper on the tail; the tag stays silent until you cut the tail.</li>
+      <li>Optional: a Kapton washer (≈ Ø 7 mm, Ø 2 mm hole) on the underside, hole over the round − pad.</li>
+      <li>A <b>small</b> dab of silver epoxy on the − pad; seat the cell <b>− cap down</b>, centred on the printed ring. Epoxy bridging cap and can shorts the cell.</li>
+      <li>A short 0.2 mm wire from the <b>+</b> pad to the can's side, fixed with silver epoxy. <b>Never solder to the cell.</b> 8331D cures in ≈ 6 h at room temperature or 10 min at 65 °C.</li>
+      <li>Check: + and G on the tail read the cell voltage. V1 now advertises; V2 is silent.</li>
+      <li>V2 in the field: cut the tail (scalpel, not side cutters: the cell is live) and seal the edge.</li>
+      <li>Encapsulate in epoxy, leaving the antenna free beyond the first millimetre.</li>
+    </ol></div>
+  </div>
+</div></section>
+
+<section id="follow"><div class="wrap">
+  <h2><span class="n">8</span>Follow it</h2>
+  <div class="steps nonum">
+    <div class="step"><h3>Find My</h3><p>Nearby iPhones report the tag's position to Apple, encrypted to your key. Fetch and decrypt the reports with the private key from your <code>.keys</code> file, using an OpenHaystack-compatible fetcher such as <a href="https://github.com/malmeloo/FindMy.py">FindMy.py</a> or <a href="https://github.com/dchristl/macless-haystack">macless-haystack</a> (Docker; it runs on a Raspberry Pi). Both need an Apple ID.</p></div>
+    <div class="step"><h3>Hubble</h3><p>Packets show up in the Hubble app and dashboard. Hubble's packets API and webhooks return each packet with the relay's location and the payload already decrypted, as base64; <code>parse_sensors()</code> in <code>hubble_decode.py</code> turns it into VCC, temperature and advert count.</p></div>
+    <div class="step"><h3>Payload</h3><p>Byte 0: VCC × 0.03125 V. Bytes 1–2: temperature, signed, × 0.01 °C. Bytes 3–6: advert count. All little-endian. <code>Mh0LAAAAAA==</code> is 1.562 V, 28.45 °C, count 0.</p></div>
+  </div>
+  <h3>What it looked like</h3>
+  <p>A walk on 20 Nov 2026 with two Hagalu tags running on light alone: one on Find My, one on Hubble. The cluster of close points is inside a supermarket, under ordinary shop lighting.</p>
+  <div class="figs">
+    <figure><img src="img/walk-findmy-track.jpg" alt="Map of Find My sightings of a Hagalu tag, coloured from oldest to newest" loading="lazy"><figcaption>Find My: the track.</figcaption></figure>
+    <figure><img src="img/walk-findmy-sightings.jpg" alt="Dashboard listing 143 Find My sightings in view and 220 saved" loading="lazy"><figcaption>Find My: sightings that afternoon.</figcaption></figure>
+    <figure><img src="img/walk-hubble-payload.jpg" alt="A Hubble packet decoded as 1.562 V, 28.45 degrees C, 0 adverts, with the relay's GPS fix" loading="lazy"><figcaption>Hubble: one packet, with the relay's GPS fix and the decoded payload.</figcaption></figure>
+  </div>
+  <p class="small">On light alone, every Hubble packet checked read 1.562 V and advert count 0: at that supply the counters don't advance, so on Hagalu they carry no information, and the rotating ID stays at its first value (Hubble still decodes it). VCC and temperature are still useful.</p>
+</div></section>
+
+<footer><div class="wrap">
+  Permissive, with attribution: hardware, docs and logo under <a href="https://github.com/pvnkmrksk/gantu-tag/blob/main/LICENSE">CC BY 4.0</a>; scripts and this site under <a href="https://github.com/pvnkmrksk/gantu-tag/blob/main/LICENSE-CODE">MIT</a>. No warranty: you build and use these at your own risk.<br>
+  The same guide on GitHub: <a href="https://github.com/pvnkmrksk/gantu-tag/blob/main/docs/guide.md">docs/guide.md</a> · <a href="./">gantu-tag home</a>
+</div></footer>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const $ = (id) => document.getElementById(id);
+  const esc = (s) => s.replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+  const urls = [];
+  function fileLink(name, text, label) {
+    const u = URL.createObjectURL(new Blob([text], { type: "application/octet-stream" }));
+    urls.push(u);
+    return `<a class="btn" href="${u}" download="${esc(name)}" style="margin:6px 8px 0 0">${esc(label)}</a>`;
+  }
+  async function template(name) {
+    const r = await fetch("files/" + name, { cache: "no-cache" });
+    if (!r.ok) throw new Error("Couldn't load the template. Open this page on the website, or use the scripts.");
+    return r.text();
+  }
+  function tab(fm) {
+    $("tab-fm").classList.toggle("on", fm); $("tab-hb").classList.toggle("on", !fm);
+    $("pane-fm").hidden = !fm; $("pane-hb").hidden = fm;
+  }
+  $("tab-fm").onclick = () => tab(true);
+  $("tab-hb").onclick = () => tab(false);
+
+  $("fm-go").onclick = async () => {
+    const out = $("fm-out");
+    urls.splice(0).forEach(URL.revokeObjectURL);
+    try {
+      const name = GantuCfg.safeName($("fm-name").value);
+      const given = $("fm-adv").value.trim();
+      let priv = null, adv;
+      if (given) adv = GantuCfg.parseAdvKey(given);
+      else ({ priv, adv } = GantuCfg.newKeyPair());
+      const r = GantuCfg.findmy(await template("findmy-template.cfg"), adv);
+      let html = "";
+      if (priv) {
+        html += `<p class="warn"><b>Save the .keys file now.</b> It holds the private key, the only way to decrypt this tag's reports, and it exists nowhere else.</p>`;
+        html += fileLink(name + ".keys", await GantuCfg.keysFile(name, priv, adv), name + ".keys (private)");
+      }
+      html += fileLink(name + ".findmy.cfg", r.cfg, name + ".findmy.cfg");
+      html += `<p style="margin-top:12px">A scanner that shows addresses should see:</p>
+        <pre>Address:  ${r.address}\nRaw data: ${r.raw}   (31 bytes, no flags field)</pre>
+        <p class="small">Typing it into the Config Tool by hand instead: advertising set #1 → Custom → only Manufacturer Specific Data, ID <code>0x004C</code>, Data below, and the address byte-reversed.</p>
+        <pre>Data:    ${r.toolData}\nAddress: ${r.typed}</pre>
+        <p class="small">Advertisement key: <code>${GantuCfg.b64(adv)}</code></p>`;
+      out.innerHTML = html;
+    } catch (e) { out.innerHTML = `<p class="err">${esc(e.message)}</p>`; }
+  };
+
+  $("hb-go").onclick = async () => {
+    const out = $("hb-out");
+    urls.splice(0).forEach(URL.revokeObjectURL);
+    try {
+      const name = GantuCfg.safeName($("hb-name").value);
+      const key = GantuCfg.parseHubbleKey($("hb-key").value);
+      const cfg = GantuCfg.hubble(await template("hubble-template.cfg"), key);
+      out.innerHTML = fileLink(name + ".hubble.cfg", cfg, name + ".hubble.cfg") +
+        `<p class="small" style="margin-top:10px">Every 4 s, 0 dBm, period exponent 15, payload: VCC, temperature, advert count. The file contains the key: keep it private.</p>`;
+    } catch (e) { out.innerHTML = `<p class="err">${esc(e.message)}</p>`; }
+  };
+});
+</script>
+</body>
+</html>
