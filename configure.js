@@ -1,4 +1,6 @@
-/* gantu-tag: turn a key into a NanoBeacon Config Tool .cfg, in the browser. MIT licence.
+/* gantu-tag: turn a key into a NanoBeacon Config Tool .cfg, in the browser.
+ * Copyright (C) 2026 Pavan Kumar Kaushik. AGPL-3.0-or-later; see LICENSE-CODE and NOTICE at
+ * https://github.com/pvnkmrksk/gantu-tag
  *
  * Same output as tools/new_findmy_tag.py and tools/new_hubble_tag.py: the templates in configs/ with the key
  * written in, byte for byte. Nothing is sent anywhere: the key stays in this page.

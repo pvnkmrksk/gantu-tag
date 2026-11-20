@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier: AGPL-3.0-or-later
+# Copyright (C) 2026 Pavan Kumar Kaushik. Part of gantu-tag, https://github.com/pvnkmrksk/gantu-tag (see NOTICE).
 """Decode a gantu tag's Hubble advert (service data of UUID 0xFCA6, AES-EAX, protocol v2) with its key.
 
 Usage:  python3 tools/hubble_decode.py ~/gantu-keys/hagalu_002.hubble.key 08bd470d7219e1d96ffe3c...

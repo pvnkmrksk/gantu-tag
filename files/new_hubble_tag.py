@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier: AGPL-3.0-or-later
+# Copyright (C) 2026 Pavan Kumar Kaushik. Part of gantu-tag, https://github.com/pvnkmrksk/gantu-tag (see NOTICE).
 """Make a Hubble Network .cfg for one gantu tag, for InPlay's NanoBeacon Config Tool.
 
 Usage:  python3 tools/new_hubble_tag.py hagalu_002 [--payload sensors|ff] [--interval 4]
