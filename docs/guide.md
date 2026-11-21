@@ -214,7 +214,7 @@ Full details: [`hagalu/README.md`](../hagalu/README.md#hand-assembly) and
 
 ## 8. Follow it
 
-The [Gantu dashboard](dashboard.md) collects both networks on one Pi or laptop, with a map and saved history
+[Gantumoote](https://github.com/pvnkmrksk/gantumoote), the Gantu dashboard, collects both networks on one Pi or laptop, with a map and saved history
 for each tag and decoded readings from Hubble. The setup guide shows how to add your tags and leave a Pi
 collecting when you turn your laptop off.
 

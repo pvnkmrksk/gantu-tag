@@ -16,6 +16,3 @@ fp-info-cache
 # built site (site/publish.sh)
 _site/
 
-# Dashboard venv and host-local state (keys, tokens, logs, SQLite, backups, tunnel)
-/dashboard/.venv/
-/dashboard/data/

@@ -10,7 +10,7 @@ a node.
 
 **Website:** https://pvnkmrksk.github.io/gantu-tag/ · **Build guide:** [step by step](docs/guide.md)
 ([on the website](https://pvnkmrksk.github.io/gantu-tag/guide.html), with a form that turns your key into a config) ·
-**Dashboard:** [self-host on a Pi or laptop](docs/dashboard.md)
+**Dashboard:** [Gantumoote](https://github.com/pvnkmrksk/gantumoote), self-hosted on a Pi or laptop
 
 These are **early pilots**. The first panels were ordered on 6 November 2026 and arrived assembled on 19 November;
 bench testing has started. **First result, the same evening:** a Hagalu S6, configured over UART and run from RAM
@@ -110,7 +110,7 @@ The [build guide](docs/guide.md) walks through every step, with photos. In short
 
 ## Follow your tags
 
-The [self-hosted dashboard](docs/dashboard.md) is the map we used for the first walk. Run it on a laptop or leave
+[Gantumoote](https://github.com/pvnkmrksk/gantumoote), the self-hosted dashboard in its own repository, is the map we used for the first walk. Run it on a laptop or leave
 it collecting on a Raspberry Pi. It handles Find My and Hubble in the same device list, including voltage,
 temperature and advert count from the Gantu Hubble payload. Each tag keeps its own history. Your keys, history
 and logs stay on the host. A Pi can start collecting at boot and keep the same HTTPS address through a named tunnel.
@@ -137,8 +137,7 @@ On Irulu the 0.13 g cell is the floor; everything else can shrink to ≈ 0.03–
 | [`order/`](order/) | The exact files sent to JLCPCB, with a checksum |
 | [`configs/`](configs/) | Find My and Hubble config templates for InPlay's Config Tool: add your key |
 | [`tools/`](tools/) | Make a tag's key and config (`new_findmy_tag.py`, `new_hubble_tag.py`); decode a Hubble advert (`hubble_decode.py`) |
-| [`dashboard/`](dashboard/) | Private tracker and collector for a [Pi or laptop](docs/dashboard.md), with systemd services for boot and local backups |
-| [`docs/`](docs/) | [Build guide](docs/guide.md), [programming](docs/programming.md), [dashboard setup](docs/dashboard.md), [roadmap](docs/roadmap.md), [tag records](docs/tags.md), the v8 handover and build notes, photos, the logo |
+| [`docs/`](docs/) | [Build guide](docs/guide.md), [programming](docs/programming.md), [roadmap](docs/roadmap.md), [tag records](docs/tags.md), the v8 handover and build notes, photos, the logo |
 | [`site/`](site/) | The website ([publish it](site/publish.sh) to the `gh-pages` branch) |
 
 ## History
@@ -188,12 +187,11 @@ conditions that pass on to everything made from it:
 |---|---|
 | **Hardware:** KiCad projects, Gerbers, BOM and placement files, the panel, the order files, the tag configs in `configs/` | [CERN-OHL-S-2.0](LICENSE), strongly reciprocal: boards and tags made from the design count too |
 | **Documentation and media:** the docs, photos, renders, PDFs, the logo, the website's text and images | [CC BY-SA 4.0](LICENSE-DOCS) |
-| **Software:** `tools/`, `dashboard/`, `*/tools/`, the review scripts, `docs/logo/make_logo.py`, the website's code | [AGPL-3.0-or-later](LICENSE-CODE): also covers modified copies run as a web service, such as the dashboard |
+| **Software:** `tools/`, `*/tools/`, the review scripts, `docs/logo/make_logo.py`, the website's code | [AGPL-3.0-or-later](LICENSE-CODE): also covers modified copies run as a web service. The dashboard, [Gantumoote](https://github.com/pvnkmrksk/gantumoote), is AGPL too |
 
 Two conditions in [`NOTICE`](NOTICE) make the credit concrete: anyone who sells or hands out tags made from the
 design must include the source link and the credit line in the packaging or documentation, and modified software
-must keep the credit in its source and in its legal notices. Bundled third-party files keep their own licences
-([MapLibre](dashboard/assets/MAPLIBRE-LICENSE), [D3](dashboard/assets/D3-COLOR-LICENSE)).
+must keep the credit in its source and in its legal notices.
 
 Versions up to commit `53f775e` (20 November 2026) were published under CC BY 4.0 and MIT, and copies of those keep
 those terms; everything after is under the licences above. The circuits follow InPlay's IN100 datasheet and the

@@ -32,7 +32,7 @@ Documentation and media: Creative Commons Attribution-ShareAlike 4.0 Internation
 
 Software: GNU Affero General Public License v3.0 or any later version (AGPL-3.0-or-later), full
 text in LICENSE-CODE.
-    The code in tools/, dashboard/, hagalu/tools/, irulu/tools/, panel/tools/, the review scripts
+    The code in tools/, hagalu/tools/, irulu/tools/, panel/tools/, the review scripts
     in */docs/review_scripts/, docs/logo/make_logo.py, and the website's HTML, CSS and JavaScript
     in site/.
 
@@ -46,23 +46,18 @@ it themselves).
 
 Attribution in the software (AGPL-3.0 section 7(b)). The credit line above is an author
 attribution that must be preserved in the source code, and in the Appropriate Legal Notices
-displayed by any program built from it, such as the dashboard's interface.
+displayed by any program built from it.
 
 
 THIRD-PARTY MATERIAL (keeps its own licence)
 
-    dashboard/assets/maplibre.js and maplibre.css: MapLibre GL JS, BSD-3-Clause
-        (dashboard/assets/MAPLIBRE-LICENSE).
-    The colour tables in dashboard/assets/trajectory.js: d3-scale-chromatic, ISC
-        (dashboard/assets/D3-COLOR-LICENSE).
     configs/hubble-template.cfg: its Hubble-specific parts (the advert layout and the register
         writes for the rotating ID) follow Hubble Network's published IN100 sample
         configurations.
 
-Not part of this repository: FindMy.py (MIT) and the Apple authentication helper os-findmy-e
-(GPL-2.0-only), which dashboard/setup_apple.py downloads onto your own host. GPL-2.0-only code
-can't be combined with AGPL-3.0 code in one distributed program, so ship the dashboard and that
-helper separately.
+The dashboard moved to its own repository, https://github.com/pvnkmrksk/gantumoote, on
+21 November 2026, with its history, its third-party notices (MapLibre GL JS, d3-scale-chromatic)
+and its note on the Apple helper.
 
 
 EARLIER VERSIONS
