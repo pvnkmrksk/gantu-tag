@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Choosing a Find My polling interval · gantu-tag lab record</title>
+<meta name="description" content="Hagalu-001 polling replay from 21 November 2026, with the data and rationale for Gantumoote’s 20-minute default.">
+<link rel="icon" type="image/svg+xml" href="../img/gantu.svg">
+<link rel="stylesheet" href="../style.css">
+</head>
+<body class="guide">
+<nav><div class="wrap">
+  <a class="brand" href="../"><img src="../img/gantu.svg" alt="">gantu-tag</a>
+  <div class="links"><a href="../#lab-records">Lab records</a><a href="https://github.com/pvnkmrksk/gantumoote" class="opt">Gantumoote</a></div>
+</div></nav>
+<header><div class="wrap">
+  <p class="say">Lab record · <time datetime="2026-11-22">22 November 2026</time></p>
+  <h1>Choosing a Find My polling interval</h1>
+  <p class="lede">Hagalu-001 · OpenHaystack replay · 21 November 2026, Europe/Berlin</p>
+</div></header>
+<main>
+<section><div class="wrap">
+  <h2>Decision</h2>
+  <p>Set Gantumoote’s default to <strong>20 minutes</strong> for OpenHaystack. That schedules 72 batch fetches a day, 95% fewer than a one-minute schedule. The replay stayed within a <strong>2 km route tolerance</strong> at every 20-minute start offset under both tested report rankings. This tolerance suits the aim of preserving kilometre-scale route changes in migration studies.</p>
+  <p>Moving from 20 to 30 minutes saves 24 scheduled fetches a day. It also introduces route shortcuts of up to 7.67 km, depending on start time and report ranking. An hourly schedule can cut across about 20 km. For a study that needs a 1 km tolerance, five minutes was the longest tested interval that passed at every offset under both rankings.</p>
+</div></section>
+<section><div class="wrap">
+  <h2>Data and replay</h2>
+  <p>The reference is a read-only export of Hagalu-001’s stored OpenHaystack sightings in Gantumoote on a Raspberry Pi. The date window was midnight to midnight on 21 November 2026 CET. The archive had <strong>108 distinct sightings</strong>, from 09:54:40 to 16:14:50 CET. The first successful fetch trailed the sighting by a median 7.15 minutes, with a maximum of 164.14 minutes.</p>
+  <ol>
+    <li>Treat a report as available from the minute the Pi first saved it. Replay each cadence at every whole-minute start offset from midnight. For example, 20-minute polling has 20 offsets, from +0 through +19 minutes.</li>
+    <li>At each poll, consider available reports with sighting timestamps within the preceding seven days. Keep up to eight, then combine the simulated batches and deduplicate by archived sighting. The replay includes earlier sightings as candidates and continues past midnight so late reports can be captured.</li>
+    <li>Rank the candidates by first-fetch time, then repeat with sighting time. An earlier live batch returned exactly eight distinct reports for each of the three tags that reported and zero for the other 18. A separate fetch returned eight reports from a tag with 22 already archived for the requested seven-day window. Eight is an empirical model for this collector, and Apple’s ranking is unknown.</li>
+    <li>For each omitted sighting, measure the shortest distance to the straight segment between the chronologically bracketing retained sightings. Beyond a replay’s endpoints, measure to the nearest retained endpoint. Retained fixes contribute zero deviation. The maximum over all 108 sightings captures the largest skipped turn or excursion.</li>
+  </ol>
+</div></section>
+<section><div class="wrap">
+  <h2>Results across start offsets</h2>
+  <div class="tw"><table>
+    <thead><tr><th scope="col">Poll interval</th><th scope="col" class="n">Fetches per day</th><th scope="col" class="n">Sightings kept</th><th scope="col">Maximum deviation, median (range)</th><th scope="col">Worst deviation when ranked by sighting time</th></tr></thead>
+    <tbody>
+      <tr><th scope="row">1 minute</th><td class="n">1,440</td><td class="n">108</td><td>0</td><td>0</td></tr>
+      <tr><th scope="row">2 minutes</th><td class="n">720</td><td class="n">108</td><td>0</td><td>40 m</td></tr>
+      <tr><th scope="row">5 minutes</th><td class="n">288</td><td class="n">107–108</td><td>24 m (0–24 m)</td><td>512 m</td></tr>
+      <tr><th scope="row">10 minutes</th><td class="n">144</td><td class="n">94–104</td><td>89 m (71–512 m)</td><td>1.61 km</td></tr>
+      <tr><th scope="row">20 minutes</th><td class="n">72</td><td class="n">73–83</td><td>1.47 km (1.06–1.61 km)</td><td>1.90 km</td></tr>
+      <tr><th scope="row">30 minutes</th><td class="n">48</td><td class="n">60–71</td><td>2.41 km (1.61–6.48 km)</td><td>7.67 km</td></tr>
+      <tr><th scope="row">60 minutes</th><td class="n">24</td><td class="n">46–52</td><td>13.19 km (3.85–19.92 km)</td><td>19.92 km</td></tr>
+    </tbody>
+  </table></div>
+  <p class="small">Counts and deviation ranges use the first-fetch ranking. Fetch counts are scheduled batches per day. Retries and manual fetches can increase the actual request count.</p>
+  <div class="figs"><figure>
+    <a href="find-my-polling-routes.png"><img src="find-my-polling-routes.png" width="1246" height="1152" alt="The 20-minute worst-offset route closely follows the reference. The 30-minute and hourly worst-offset routes cut across increasingly large bends."></a>
+    <figcaption>The one-minute archive and the largest-deviation offset at 20, 30 and 60 minutes, ranked by first fetch. Open the figure for full resolution. The axes show distance relative to the first fix.</figcaption>
+  </figure></div>
+  <p>At 30 minutes, the +7-minute offset kept 71 sightings, the maximum at that cadence. It still cut 6.48 km across a bend around 11:12 CET. Under each ranking, 11 of the 30 possible offsets exceeded a 5 km deviation.</p>
+  <p><a href="find-my-polling-offsets.csv" download>Download the results for each offset (CSV)</a>. All 256 replay runs include the rank rule, interval, offset, retention and distance metrics. The file contains summary metrics only.</p>
+</div></section>
+<section><div class="wrap">
+  <h2>Limits and account risk</h2>
+  <p>The one-minute archive is the reference for this replay. It already had a 74.5-minute gap and several observed legs faster than the 35 km/h flight ceiling assumed for the migration study. The geometric distance measures how much route shape is lost against the archive. It cannot resolve the true path through an observation gap or establish where the tag was at each moment. This was one tag on one day.</p>
+  <p>Frequent fetches can lead Apple to throttle requests or suspend account access. The replay measures the trade-off between route fidelity and request volume. Apple’s public documentation gives no verified safe interval for this collector. An interrupted Apple session blocks new reports until sign-in is restored. The backed-up tag private key and the locally archived sightings remain usable. <a href="https://support.apple.com/en-bw/guide/security/-sece994d0126/web">Apple Find My security documentation</a> · <a href="https://www.apple.com/legal/internet-services/icloud/">iCloud terms</a></p>
+</div></section>
+</main>
+<footer><div class="wrap">gantu-tag by Pavan Kumar Kaushik · <a href="../#lab-records">Lab records</a></div></footer>
+</body>
+</html>
