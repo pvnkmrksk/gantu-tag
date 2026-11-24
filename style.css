@@ -71,6 +71,10 @@ footer{padding:36px 0 60px;border-top:1px solid var(--line);color:var(--muted);f
 .figs{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px;margin:16px 0 8px}
 .figs figure{margin:0;background:var(--card);border:1px solid var(--line);border-radius:14px;overflow:hidden}
 .figs img{width:100%;display:block}
+.figs .bench-photo{max-width:24rem}
+.lab-record .figs img{height:auto}
+.lab-record pre{overflow-x:auto;background:var(--code);padding:10px 12px;border-radius:10px}
+.lab-record pre code{padding:0;background:transparent}
 .figs figcaption{font-size:13.5px;color:var(--muted);padding:8px 12px 10px}
 .warn{background:#fdecea;border:1px solid #f1b8b0;border-radius:12px;padding:10px 14px;font-size:15px;margin:14px 0}
 .tip{background:#eef1fb;border:1px solid #c9d0ef;border-radius:12px;padding:10px 14px;font-size:15px;margin:14px 0}

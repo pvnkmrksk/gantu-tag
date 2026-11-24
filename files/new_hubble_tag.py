@@ -58,6 +58,9 @@ def main():
     ap.add_argument("--period-exponent", type=int, default=15, choices=range(10, 16),
                     help="EID rotation 2^n s; must match the Hubble registration (default 15)")
     ap.add_argument("--tx", type=int, default=0, choices=range(-4, 5), help="dBm (default 0)")
+    ap.add_argument("--temp-unit", type=float, default=0.01,
+                    help="degC per count of the temperature field (default 0.01). The unit is global on the chip, so "
+                         "a tag that also sends temperature in its Find My status byte uses 0.5 here too")
     ap.add_argument("--template", default=TEMPLATE, help="default: configs/hubble-template.cfg")
     ap.add_argument("--out-dir", default=KEYS_DIR, help="default: $GANTU_KEYS or ~/gantu-keys")
     a = ap.parse_args()
@@ -81,6 +84,7 @@ def main():
     adv["rot_exp"] = a.period_exponent
     cfg["txSetting"].update(key0=key.hex(), txPower=a.tx,
                             xoCap=8)  # cap code that works on the v8.3 boards (Hubble's samples: 7)
+    cfg["tempUnit"] = a.temp_unit
     count = (2 ** a.period_exponent * 127 * 1000) // (a.interval * 1000)
     regs[next(i for i, r in enumerate(regs) if r.startswith(TIMER))] = TIMER + f"{count:x}"
 
@@ -90,7 +94,7 @@ def main():
         f.write(f"# gantu tag {a.name} - Hubble AES-128 key (AES-128-EAX, DEVICE_UPTIME). KEEP PRIVATE.\n"
                 f"key_hex: {key.hex()}\nkey_b64: {base64.b64encode(key).decode()}\n"
                 f"period_exponent: {a.period_exponent}\ninterval_s: {a.interval}\ntx_dbm: {a.tx}\n"
-                f"payload: {a.payload}\n")
+                f"payload: {a.payload}\ntemp_unit: {a.temp_unit:g}\n")
     with open(cfg_path, "w") as f:
         json.dump(cfg, f, indent=4)       # the Config Tool's own layout, so files compare byte for byte
     os.umask(old)

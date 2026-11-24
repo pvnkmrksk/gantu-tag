@@ -18,12 +18,13 @@ from cryptography.hazmat.primitives.cmac import CMAC
 VCC_UNIT, TEMP_UNIT = 0.03125, 0.01   # V and degC per count (vccUnit, tempUnit in the .cfg)
 
 
-def parse_sensors(payload: bytes) -> dict:
-    """7-byte gantu sensor payload: VCC (1), temperature (2, signed), advertising count (4); little-endian."""
+def parse_sensors(payload: bytes, temp_unit: float = TEMP_UNIT) -> dict:
+    """7-byte gantu sensor payload: VCC (1), temperature (2, signed), advertising count (4); little-endian.
+    temp_unit is the tag's tempUnit (0.01 degC by default; 0.5 on tags that also send temperature over Find My)."""
     if len(payload) != 7:
         raise ValueError(f"expected 7 bytes, got {len(payload)}")
     return {"vcc_v": round(payload[0] * VCC_UNIT, 3),
-            "temp_c": round(int.from_bytes(payload[1:3], "little", signed=True) * TEMP_UNIT, 2),
+            "temp_c": round(int.from_bytes(payload[1:3], "little", signed=True) * temp_unit, 2),
             "adv_count": int.from_bytes(payload[3:7], "little")}
 
 
@@ -51,7 +52,7 @@ def _eid(key, counter, rot):
     return int.from_bytes(_ecb(key0, bytes(11) + bytes([rot]) + counter.to_bytes(4, "big"))[:8], "big")
 
 
-def decode(key: bytes, rot: int, raw: bytes) -> str:
+def decode(key: bytes, rot: int, raw: bytes, temp_unit: float = TEMP_UNIT) -> str:
     if raw[0] >> 2 != 2:
         return f"protocol version {raw[0] >> 2}, not AES-EAX (2)"
     salt, eid = raw[1:3], int.from_bytes(raw[3:11], "little")
@@ -64,7 +65,7 @@ def decode(key: bytes, rot: int, raw: bytes) -> str:
         return f"ID matches (period {idx}) but the auth tag fails: damaged packet or wrong layout"
     out = f"OK, period {idx} since power-up, salt {salt.hex()}, payload {pt.hex()}"
     if len(pt) == 7:
-        s = parse_sensors(pt)
+        s = parse_sensors(pt, temp_unit)
         out += f" -> VCC {s['vcc_v']:.3f} V, {s['temp_c']:.2f} degC, advert {s['adv_count']}"
     return out
 
@@ -75,8 +76,9 @@ def main():
     kv = dict(l.split(": ", 1) for l in open(sys.argv[1]).read().splitlines()
               if ": " in l and not l.startswith("#"))
     key, rot = bytes.fromhex(kv["key_hex"].strip()), int(kv["period_exponent"])
+    temp_unit = float(kv.get("temp_unit", TEMP_UNIT))  # key files from before 21 Nov 2026 have none: 0.01
     for h in sys.argv[2:]:
-        print(f"{h}: {decode(key, rot, bytes.fromhex(h))}")
+        print(f"{h}: {decode(key, rot, bytes.fromhex(h), temp_unit)}")
 
 
 if __name__ == "__main__":
